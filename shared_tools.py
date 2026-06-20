@@ -1,4 +1,4 @@
-import pygame
+import pygame, random
 from OpenGL.GL import *
 def load_texture(path):
     surface = pygame.image.load(path)
@@ -101,18 +101,22 @@ class mask:
         self.regions=new_sections
 
 class game_object:
-    def __init__(self,visible=True,draw_layer=0,does_this_object_perform_logic=True,physics=False,object_pos_x=0,object_pos_y=0):
+    def __init__(self,visible=True,draw_layer=0,does_this_object_perform_logic=True,physics=False,object_pos_x=0,object_pos_y=0,width=0,height=0):
         self.is_visible=visible
         self.draw_layer=draw_layer
         self.is_active=does_this_object_perform_logic
         self.has_physics=physics
+        self.key=str(random.randint(-1000,1000))
         if physics or visible:
             self.x_pos,self.y_pos=object_pos_x,object_pos_y
+        if width*height!=0:
+            self.width=width
+            self.height=height
     def dump(self):
         print("Attributes:")
         for name, value in self.__dict__.items():
             print(f"  {name} = {value}")
-    def display_image(self):
+    def display_image(self,bounds=[-1,-1,2,2]):
         glColor3f(1.0, 1.0, 1.0)
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.texture)
@@ -120,16 +124,16 @@ class game_object:
         glBegin(GL_QUADS)
 
         glTexCoord2f(0, 0)
-        glVertex2f(-1, -1)
+        glVertex2f(bounds[0], bounds[1])
 
         glTexCoord2f(1, 0)
-        glVertex2f(1, -1)
+        glVertex2f(bounds[2]+bounds[0], bounds[1])
 
         glTexCoord2f(1, 1)
-        glVertex2f(1, 1)
+        glVertex2f(bounds[2]+bounds[0], bounds[3]+bounds[1])
 
         glTexCoord2f(0, 1)
-        glVertex2f(-1, 1)
+        glVertex2f(bounds[0], bounds[3]+bounds[1])
 
         glEnd()
 
