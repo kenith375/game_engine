@@ -1,15 +1,14 @@
-import game_objects
 import pygame, math, numpy, time, json
+with open("settings.json", "r") as jsonfile: 
+    settings = json.load(jsonfile)
+import game_objects
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import shared_tools
 pygame.init()
-display = (1920, 1080)
+display = (game_objects.gs.res_x, game_objects.gs.res_y)
 Screen=pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-with open("settings.json", "r") as jsonfile: 
-    settings = json.load(jsonfile)
-
 
 
 
@@ -30,7 +29,7 @@ class game:
             self.objects_list[new_game_object.key]=new_game_object
     def delete_previous(self):
         pass
-    def object_logic_frame(self):
+    def object_logic_frame(self,keys):
         for item in self.objects_list.values():
             dep=[]
             try:
@@ -39,7 +38,7 @@ class game:
             except:
                 pass
             if item.is_active:
-                item.logic_frame(dep)
+                item.logic_frame(dep,keys)
             if item.has_physics:
                 item.physics_frame(dep)
     def display_all_visible_objects(self):
@@ -62,7 +61,8 @@ while running:
     for event in pygame.event.get():
         if event.type == QUIT:
             running = False
-    main.object_logic_frame()
+    keys=pygame.key.get_pressed()
+    main.object_logic_frame(keys)
     glClear(GL_COLOR_BUFFER_BIT)
     main.display_all_visible_objects()
     pygame.display.flip()

@@ -1,10 +1,11 @@
 {
     "start_objects":[
         "background",
-        "funky_square",
+        
         "player"
     ],
     "preset1":[
-        ["wall",-100,-300,200,100]
+        ["wall",-100,-400,200,100],
+        ["wall",100,-400,100,500]
     ]
 }
